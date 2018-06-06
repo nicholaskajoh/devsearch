@@ -1,0 +1,20 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <div class="container h-100">
+    <div class="row  align-items-center h-100">
+      <div class="col-md-8 offset-md-2 text-center mb-5 pb-5">
+        <h1 class="text-success">devsearch</h1>
+        <p>Google for devs</p>
+
+        <form method="get" action="/search">
+          <input
+            class="form-control form-control-lg"
+            type="text"
+            placeholder="Search..."
+            name="q">
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
