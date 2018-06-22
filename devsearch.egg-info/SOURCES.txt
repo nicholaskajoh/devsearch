@@ -1,6 +1,8 @@
 README.md
 devsearch/__init__.py
+devsearch/commands.py
 devsearch/models.py
+devsearch/spider.py
 devsearch/views.py
 devsearch.egg-info/PKG-INFO
 devsearch.egg-info/SOURCES.txt

@@ -1,57 +1,64 @@
 from devsearch import app
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
-
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
-
-class Page(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    url = db.Column(db.String(2000), unique=True)
-    title = db.Column(db.String(150))
-    content = db.Column(db.Text)
-    links = db.relationship('PageLink', backref='page', lazy=True)
-    pagerank = db.Column(db.Float)
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-    updated_at = db.Column(db.DateTime, server_default=db.func.now(), \
-                           server_onupdate=db.func.now())
-
-    def __repr__(self):
-        return '<Page %s>' % self.url
+from mongoengine import *
+import datetime
 
 
-class PageLink(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    page_id = db.Column(db.Integer, db.ForeignKey('page.id'), \
-                    nullable=False)
-    link = db.Column(db.Text)
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-    updated_at = db.Column(db.DateTime, server_default=db.func.now(), \
-                    server_onupdate=db.func.now())
+connect(host=app.config['MONGODB_URI'])
 
-    def __repr__(self):
-        return '<PageLink %s>' % self.link
+class PageLink(Document):
+    url = URLField()
+    created_at = DateTimeField()
+    updated_at = DateTimeField()
 
-
-class CrawlLink(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    url = db.Column(db.Text)
-    is_crawled = db.Column(db.Boolean, default=False)
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-    updated_at = db.Column(db.DateTime, server_default=db.func.now(), \
-                    server_onupdate=db.func.now())
-
-    def __repr__(self):
-        return '<CrawlLink %s>' % self.url
+    def save(self, *args, **kwargs):
+        if not self.created_at:
+            self.created_at = datetime.datetime.now()
+        self.updated_at = datetime.datetime.now()
+        return super(PageLink, self).save(*args, **kwargs)
 
 
-class Query(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    string = db.Column(db.Text)
-    search_count = db.Column(db.Integer)
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-    updated_at = db.Column(db.DateTime, server_default=db.func.now(), \
-                    server_onupdate=db.func.now())
+class Page(Document):
+    url = URLField(required=True, unique=True)
+    title = StringField(required=True)
+    content = StringField()
+    links = ListField(ReferenceField(PageLink))
+    pagerank = FloatField()
+    created_at = DateTimeField()
+    updated_at = DateTimeField()
 
-    def __repr__(self):
-        return '<Query %s>' % self.string
+    def save(self, *args, **kwargs):
+        if not self.created_at:
+            self.created_at = datetime.datetime.now()
+        self.updated_at = datetime.datetime.now()
+        return super(Page, self).save(*args, **kwargs)
+
+
+class Index(Document):
+    word = StringField()
+    pages = ListField(ReferenceField(Page))
+
+
+class CrawlList(Document):
+    url = URLField()
+    is_crawled = BooleanField(default=False)
+    created_at = DateTimeField()
+    updated_at = DateTimeField()
+
+    def save(self, *args, **kwargs):
+        if not self.created_at:
+            self.created_at = datetime.datetime.now()
+        self.updated_at = datetime.datetime.now()
+        return super(CrawlList, self).save(*args, **kwargs)
+
+
+class Query(Document):
+    q = StringField()
+    frequency = IntField(default=1)
+    created_at = DateTimeField()
+    updated_at = DateTimeField()
+
+    def save(self, *args, **kwargs):
+        if not self.created_at:
+            self.created_at = datetime.datetime.now()
+        self.updated_at = datetime.datetime.now()
+        return super(Query, self).save(*args, **kwargs)

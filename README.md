@@ -3,7 +3,7 @@ Google for devs.
 
 ## Stack
 - Python 3
-- MySQL
+- MongoDB
 - Flask
 - Bootstrap 4
 - Scrapy
@@ -12,7 +12,6 @@ Google for devs.
 - Clone or download this repo
 - Create and/or activate a virtual environment
 - Run `pip install -e .`
-- Create MySQL db
+- Create MongoDB database
 - Create a *.env* file from *.env.example*
-- Run `flask db upgrade`
 - Run `flask run`
