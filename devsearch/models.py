@@ -23,6 +23,7 @@ class Page(Document):
     content = StringField()
     links = ListField(ReferenceField(PageLink))
     pagerank = FloatField()
+    last_indexed = DateTimeField()
     created_at = DateTimeField()
     updated_at = DateTimeField()
 
@@ -34,7 +35,7 @@ class Page(Document):
 
 
 class Index(Document):
-    word = StringField()
+    word = StringField(unique=True)
     pages = ListField(ReferenceField(Page))
 
 

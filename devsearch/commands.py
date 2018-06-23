@@ -1,6 +1,7 @@
 from devsearch import app
 from devsearch.spider import DSSpider
 from scrapy.crawler import CrawlerProcess
+from devsearch.indexer import Indexer
 
 
 @app.cli.command()
@@ -11,3 +12,9 @@ def crawl():
     })
     process.crawl(DSSpider)
     process.start()
+
+
+@app.cli.command()
+def index():
+    indexer = Indexer()
+    indexer.index()
