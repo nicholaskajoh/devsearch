@@ -56,13 +56,12 @@ class DSSpider(scrapy.Spider):
 
         # save the page
         if Page.objects(url=response.url).count() == 0:
-            page = Page(url=response.url, title=page_title, content=page_content, links=[])
+            page = Page(url=response.url, title=page_title, content=page_content).save()
             for url in page_urls:
-                page.links.append(PageLink(url=url).save())
+                page.update(add_to_set__links=PageLink(url=url).save())
                 # add url to crawl list
                 if CrawlList.objects(url=url).count() == 0:
                     CrawlList(url=url).save()
-            page.save()
             # update crawl list for current page
             CrawlList.objects(url=response.url).update(is_crawled=True)
 
