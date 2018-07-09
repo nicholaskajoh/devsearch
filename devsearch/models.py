@@ -22,7 +22,7 @@ class Page(Document):
     title = StringField(required=True)
     content = StringField()
     links = ListField(ReferenceField(PageLink))
-    pagerank = FloatField(default=1.0)
+    pagerank = FloatField(default=0)
     created_at = DateTimeField()
     last_indexed = DateTimeField()
     last_crawled = DateTimeField()
