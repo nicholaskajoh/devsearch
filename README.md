@@ -15,5 +15,8 @@ Google for devs.
 - Create MongoDB database
 - Create a *.env* file from *.env.example*
 - Crawl the web with `flask crawl`
-- Index pages using `flask index`
+- Index pages using `flask index` and `flask idf`
 - Run `flask run`
+
+## Notes
+- You need to add at least one url into the **crawl_list** collection for `flask crawl` to work
