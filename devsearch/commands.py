@@ -2,6 +2,7 @@ from devsearch import app
 from devsearch.spider import DSSpider
 from scrapy.crawler import CrawlerProcess
 from devsearch.indexer import Indexer
+from devsearch.pagerank import PageRank
 
 
 @app.cli.command()
@@ -18,3 +19,15 @@ def crawl():
 def index():
     indexer = Indexer()
     indexer.index()
+
+
+@app.cli.command()
+def idf():
+    indexer = Indexer()
+    indexer.idf()
+
+
+@app.cli.command()
+def rank():
+    ranker = PageRank()
+    ranker.rank()

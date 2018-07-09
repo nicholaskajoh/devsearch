@@ -16,6 +16,7 @@ else:
 app.config['SPIDER_ALLOWED_DOMAINS'] = SPIDER_ALLOWED_DOMAINS
 app.config['CLOSESPIDER_PAGECOUNT'] = os.getenv('CLOSESPIDER_PAGECOUNT')
 app.config['INDEXER_PAGE_LIMIT'] = int(os.getenv('INDEXER_PAGE_LIMIT'))
+app.config['PAGERANK_MAX_ITERATIONS'] = int(os.getenv('PAGERANK_MAX_ITERATIONS'))
 
 import devsearch.models
 import devsearch.views

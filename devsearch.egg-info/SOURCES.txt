@@ -1,7 +1,9 @@
 README.md
 devsearch/__init__.py
 devsearch/commands.py
+devsearch/indexer.py
 devsearch/models.py
+devsearch/pagerank.py
 devsearch/spider.py
 devsearch/views.py
 devsearch.egg-info/PKG-INFO

@@ -2,11 +2,11 @@
 Google for devs.
 
 ## Stack
-- Python 3
-- MongoDB
-- Flask
-- Bootstrap 4
+- Flask (Python 3)
 - Scrapy
+- LXML
+- MongoEngine (MongoDB)
+- Bootstrap 4
 
 ## Setup
 - Clone or download this repo
@@ -14,4 +14,6 @@ Google for devs.
 - Run `pip install -e .`
 - Create MongoDB database
 - Create a *.env* file from *.env.example*
+- Crawl the web with `flask crawl`
+- Index pages using `flask index`
 - Run `flask run`
