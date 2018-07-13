@@ -4,28 +4,36 @@
   <div class="container">
     <div class="row mt-3">
       <div class="col-md-2">
-        <h2 class="text-success">devsearch</h2>
+        <h2>
+          <a class="text-success" href="/">devsearch</a>
+        </h2>
       </div>
       <div class="col-md-8">
-        <input
-          class="form-control"
-          type="text"
-          placeholder="Search..."
-          name="q">
+        <form method="get" action="/search">
+          <input
+            class="form-control"
+            type="text"
+            placeholder="Search..."
+            name="q"
+            value="{% if q %}{{ q }}{% endif %}">
+        </form>
       </div>
     </div>
 
+    {% if pages %}
     <div class="row mt-5">
       <div class="col">
-        <p>18 results found</p>
+        <p>Results found: {{ pages|length }}</p>
 
+        {% for page in pages %}
         <div>
           <h5 class="text-primary mb-0">
-            <a href="#">How to make a search engine</a>
+            <a href="{{ page.url }}">{{ page.title }}</a>
           </h5>
-          <p class="text-success mb-0">https://nicholas.kajoh.codes/search-engine</p>
+          <p class="text-success mb-0">{{ page.url }}</p>
           <p class="mb-4">Hi, this is a tutorial on how to build a search engine with Flask and Scrapy.</p>
         </div>
+        {% endfor %}
       </div>
     </div>
 
@@ -40,5 +48,6 @@
         </ul>
       </nav>
     </div>
+    {% endif %}
   </div>
 {% endblock %}
