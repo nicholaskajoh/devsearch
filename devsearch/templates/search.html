@@ -31,7 +31,7 @@
             <a href="{{ page.url }}">{{ page.title }}</a>
           </h5>
           <p class="text-success mb-0">{{ page.url }}</p>
-          <p class="mb-4">Hi, this is a tutorial on how to build a search engine with Flask and Scrapy.</p>
+          <p class="mb-4">{{ get_excerpt(page.content, q) }}</p>
         </div>
         {% endfor %}
       </div>

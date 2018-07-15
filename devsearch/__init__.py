@@ -21,3 +21,4 @@ app.config['PAGERANK_MAX_ITERATIONS'] = int(os.getenv('PAGERANK_MAX_ITERATIONS')
 import devsearch.models
 import devsearch.views
 import devsearch.commands
+import devsearch.context_processors
