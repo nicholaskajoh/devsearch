@@ -3,6 +3,7 @@ import click
 import datetime
 from collections import Counter
 import math
+import re
 
 
 class Indexer():
@@ -12,7 +13,8 @@ class Indexer():
     def index(self):
         pages = Page.objects.limit(self.PAGE_LIMIT).order_by('last_indexed')
         for page in pages:
-            content_list = page.content.lower().split(' ')
+            content = re.sub(r'[^a-zA-Z0-9_\-\' ]+', '', page.content)
+            content_list = content.lower().split(' ')
             content_word_count = len(content_list)
             words = Counter(content_list)
             for word, count in words.items():

@@ -2,14 +2,12 @@
 
 {% block content %}
   <div class="container">
+    <!-- search box -->
     <div class="row mt-3">
-      <div class="col-md-2">
-        <h2>
-          <a class="text-success" href="/">devsearch</a>
-        </h2>
-      </div>
-      <div class="col-md-8">
-        <form method="get" action="/search">
+      <div class="col-md-8 d-flex flex-row">
+        <h4><a href="/" class="text-success pr-2">devsearch</a></h4>
+
+        <form method="get" action="/search" style="width: 100%;">
           <input
             class="form-control"
             type="text"
@@ -19,35 +17,70 @@
         </form>
       </div>
     </div>
+    <!-- search box -->
 
     {% if pages %}
-    <div class="row mt-5">
-      <div class="col">
-        <p>Results found: {{ pages|length }}</p>
+      <!-- results -->
+      <div class="row mt-4">
+        <div class="col">
+          <p>Page {{ p }} of {{ pages_count }} results</p>
 
-        {% for page in pages %}
-        <div>
-          <h5 class="text-primary mb-0">
-            <a href="{{ page.url }}">{{ page.title }}</a>
-          </h5>
-          <p class="text-success mb-0">{{ page.url }}</p>
-          <p class="mb-4">{{ get_excerpt(page.content, q) }}</p>
+          {% for page in pages %}
+          <div>
+            <h5 class="text-primary mb-0">
+              <a href="{{ page.url }}">{{ page.title }}</a>
+            </h5>
+            <p class="text-success mb-0">{{ page.url }}</p>
+            <p class="mb-4">{{ get_excerpt(page.content, q) }}</p>
+          </div>
+          {% endfor %}
         </div>
-        {% endfor %}
       </div>
-    </div>
+      <!-- ./results -->
 
-    <div class="row">
-      <nav class="col">
-        <ul class="pagination justify-content-center">
-          <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
-          <li class="page-item"><a class="page-link" href="#">1</a></li>
-          <li class="page-item active"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item"><a class="page-link" href="#">Next</a></li>
-        </ul>
-      </nav>
-    </div>
+      <!-- pagination -->
+      <div class="row">
+        <nav class="col">
+          <ul class="pagination justify-content-center">
+            <li class="page-item {% if p == 1 %}disabled{% endif %}">
+              <a
+                class="page-link"
+                href="/search?q={{ q }}&p={{ p - 1 }}">
+                  Previous
+              </a>
+            </li>
+
+            {% if pagination_data.start_page > 1 %}
+              <li class="page-item disabled"><a class="page-link">...</a></li>
+            {% endif %}
+
+            {% for page in range(pagination_data.start_page, pagination_data.end_page + 1) %}
+              <li class="page-item {%if p == page %}active{% endif %}">
+                <a
+                  class="page-link"
+                  href="/search?q={{ q }}&p={{ page }}">
+                    {{ page }}
+                </a>
+              </li>
+            {% endfor %}
+
+            {% if pagination_data.end_page < pagination_data.last_page %}
+              <li class="page-item disabled"><a class="page-link">...</a></li>
+            {% endif %}
+
+            <li class="page-item {% if p == pagination_data.last_page %}disabled{% endif %}">
+              <a
+                class="page-link"
+                href="/search?q={{ q }}&p={{ p + 1 }}">
+                  Next
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <!-- ./pagination -->
+    {% else %}
+      <p class="text-center mt-5">No results</p>
     {% endif %}
   </div>
 {% endblock %}

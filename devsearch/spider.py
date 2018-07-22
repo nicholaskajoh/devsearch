@@ -32,11 +32,10 @@ class DSSpider(scrapy.Spider):
         # extract text
         html_doc = lxml.html.document_fromstring(page_html)
         page_content = " ".join(lxml.etree.XPath("//text()")(html_doc))
-        # remove line breaks, tabs, special chars and extra spaces
+        # remove line breaks, tabs and extra spaces
         page_content = re.sub('\n', ' ', page_content)
         page_content = re.sub('\r', ' ', page_content)
         page_content = re.sub('\t', ' ', page_content)
-        page_content = re.sub(r'[^a-zA-Z0-9_ ]+', '', page_content)
         page_content = re.sub(' +', ' ', page_content)
         page_content = page_content.strip()
         # get page links

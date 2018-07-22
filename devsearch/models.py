@@ -54,7 +54,7 @@ class CrawlList(Document):
 
 
 class Query(Document):
-    q = StringField()
+    q = StringField(unique=True)
     frequency = IntField(default=1)
     created_at = DateTimeField()
     updated_at = DateTimeField()
