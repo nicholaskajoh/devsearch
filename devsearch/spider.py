@@ -5,18 +5,25 @@ import lxml
 from lxml.html.clean import Cleaner
 import re
 from urllib.parse import urlparse
+import datetime
 
 
 class DSSpider(scrapy.Spider):
     name = "ds_spider"
 
-    def __init__(self):
+    def __init__(self, recrawl=False):
+        self.recrawl = recrawl
+
         if app.config['SPIDER_ALLOWED_DOMAINS'] != None:
             self.allowed_domains = app.config['SPIDER_ALLOWED_DOMAINS']
 
         self.start_urls = []
-        for link in CrawlList.objects(is_crawled=False):
-            self.start_urls.append(link.url)
+        if self.recrawl:
+            for page in Page.objects.order_by('last_crawled'):
+                self.start_urls.append(page.url)
+        else:
+            for link in CrawlList.objects(is_crawled=False).order_by('created_at'):
+                self.start_urls.append(link.url)
 
     def parse(self, response):
         selector = Selector(response)
@@ -63,7 +70,11 @@ class DSSpider(scrapy.Spider):
                     CrawlList(url=url).save()
             # update crawl list for current page
             CrawlList.objects(url=response.url).update(is_crawled=True)
+        else:
+            page = Page.objects.get(url=response.url)
+            page.update(title=page_title, content=page_content, last_crawled=datetime.datetime.now())
 
-        # crawl page urls
-        for url in page_urls:
-            yield scrapy.Request(url, callback=self.parse)
+        if not self.recrawl:
+            # crawl page urls
+            for url in page_urls:
+                yield scrapy.Request(url, callback=self.parse)
