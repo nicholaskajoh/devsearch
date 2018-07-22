@@ -12,6 +12,9 @@ def index():
 
 @app.route('/search')
 def search():
+    # get autocomplete data
+    autocomplete_data = [qo.q for qo in Query.objects.limit(250).order_by('-frequency')]
+
     q = request.args.get('q', default=None)
     p = int(request.args.get('p', default=1))
     pages = None
@@ -21,7 +24,7 @@ def search():
     if q != None and q.strip() != '':
         # search
         q = re.sub(' +', ' ', q)
-        words = q.lower().split()
+        words = re.sub('(\'s|\'|\")', '', q.lower()).split()
         per_page = 15
         position = (p - 1) * per_page
         pipeline = [
@@ -60,7 +63,6 @@ def search():
         last_page = math.ceil(pages_count / per_page)
         start_page = p - 2 if (p - 2) > 0 else 1
         end_page = p + 2 if (p + 2) < last_page else last_page
-        print(start_page, end_page)
         pagination_data = {
             'start_page': start_page,
             'end_page': end_page,
@@ -68,15 +70,17 @@ def search():
         }
 
         # save search query
-        if Query.objects(q=q).count() == 0:
-            Query(q=q).save()
+        sq = q.lower().replace('"', '')
+        if Query.objects(q=sq).count() == 0:
+            Query(q=sq).save()
         else:
-            query = Query.objects.get(q=q)
+            query = Query.objects.get(q=sq)
             query.update(frequency=query.frequency + 1)
 
     return render_template(
         'search.html',
         title='Search pages...',
+        autocomplete_data=autocomplete_data,
         q=q,
         p=p,
         pages=pages,
