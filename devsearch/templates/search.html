@@ -26,15 +26,15 @@
       <!-- results -->
       <div class="row mt-4">
         <div class="col">
-          <p>Page {{ p }} of {{ pages_count }} results</p>
+          <p>Page {{ p }} of {{ pages_count }} results ({{ exec_time }} seconds)</p>
 
           {% for page in pages %}
           <div>
             <h5 class="text-primary mb-0">
-              <a href="{{ page.url }}">{{ page.title }}</a>
+              <a href="{{ page._id.url }}">{{ page._id.title }}</a>
             </h5>
-            <p class="text-success mb-0">{{ page.url }}</p>
-            <p class="mb-4">{{ get_excerpt(page.content, q) }}</p>
+            <p class="text-success mb-0">{{ page._id.url }} (s{{ page.total_score }})</p>
+            <p class="mb-4">{{ get_excerpt(page._id.content, q) }}</p>
           </div>
           {% endfor %}
         </div>

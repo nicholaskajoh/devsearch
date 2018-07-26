@@ -3,6 +3,7 @@ from flask import render_template, request
 from devsearch.models import *
 import re
 import math
+import time
 
 
 @app.route('/')
@@ -12,6 +13,8 @@ def index():
 
 @app.route('/search')
 def search():
+    start_time = time.time()
+
     # get autocomplete data
     autocomplete_data = [qo.q for qo in Query.objects.limit(250).order_by('-frequency')]
 
@@ -26,7 +29,7 @@ def search():
         q = re.sub(' +', ' ', q)
         words = re.sub('(\'s|\'|\")', '', q.lower()).split()
         per_page = 15
-        position = (p - 1) * per_page
+        skip = (p - 1) * per_page
         pipeline = [
             {'$match': {'word': {'$in': words}}},
             {'$lookup': {
@@ -36,23 +39,20 @@ def search():
                 'as': 'page',
             }},
             {'$unwind': '$page'},
-            {'$project': {
-                'page': 1,
-                'score': {
-                    '$sum': [
-                        {'$multiply': ['$page.pagerank', 0.3]},
-                        {'$multiply': ['$tf', '$idf', 0.7]},
-                    ],
-                },
+            {'$group': {
+                '_id': '$page',
+                'total_score': {'$sum': '$score'},
             }},
-            {'$sort': {'score': -1}},
+            {'$sort': {'total_score': -1}},
+
             {'$group': {
                 '_id': None,
-                'pages': {'$addToSet': '$page'},
+                'pages_count': {'$sum': 1},
+                'pages': {'$push': '$$ROOT'},
             }},
             {'$project': {
-                'pages_count': {'$size': '$pages'},
-                'pages': {'$slice': ['$pages', position, per_page]},
+                'pages_count': 1,
+                'pages': {'$slice': ['$pages', skip, per_page]},
             }},
         ]
         result = list(Index.objects.aggregate(*pipeline))
@@ -77,6 +77,8 @@ def search():
             query = Query.objects.get(q=sq)
             query.update(frequency=query.frequency + 1)
 
+    exec_time = time.time() - start_time
+
     return render_template(
         'search.html',
         title='Search pages...',
@@ -86,4 +88,5 @@ def search():
         pages=pages,
         pages_count=pages_count,
         pagination_data=pagination_data,
+        exec_time=exec_time,
     )

@@ -16,18 +16,25 @@ def crawl(recrawl):
     process.crawl(DSSpider, recrawl=recrawl)
     process.start()
 
-
 @app.cli.command()
 def index():
     indexer = Indexer()
     indexer.index()
-
 
 @app.cli.command()
 def idf():
     indexer = Indexer()
     indexer.idf()
 
+@app.cli.command()
+def tfidf():
+    indexer = Indexer()
+    indexer.tfidf()
+
+@app.cli.command()
+def score():
+    indexer = Indexer()
+    indexer.score()
 
 @app.cli.command()
 def rank():

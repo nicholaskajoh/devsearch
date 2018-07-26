@@ -38,6 +38,11 @@ class Index(Document):
     word = StringField()
     tf = FloatField()
     idf = FloatField(default=0)
+    tfidf = FloatField(default=0)
+    score = FloatField(default=0)
+    last_idfed = DateTimeField()
+    last_tfidfed = DateTimeField()
+    last_scored = DateTimeField()
 
 
 class CrawlList(Document):
