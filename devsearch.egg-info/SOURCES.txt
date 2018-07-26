@@ -1,6 +1,7 @@
 README.md
 devsearch/__init__.py
 devsearch/commands.py
+devsearch/context_processors.py
 devsearch/indexer.py
 devsearch/models.py
 devsearch/pagerank.py

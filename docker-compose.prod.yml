@@ -1,0 +1,33 @@
+version: "3"
+services:
+  web:
+    build: .
+    restart: always
+    env_file:
+      - ./.env
+      - ./.env.secret
+    command: gunicorn --bind 0.0.0.0:8080 wsgi
+    volumes:
+      - .:/www
+    ports:
+      - "8080:8080"
+    depends_on:
+      - nginx
+      - db
+  nginx:
+    image: "nginx"
+    restart: always
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./devsearch/static:/static
+    ports:
+      - "80:80"
+  db:
+    image: "mongo:3.6.6"
+    restart: always
+    env_file:
+      - ./.env.secret
+    volumes:
+      - ./mongo/data/db:/data/db
+    ports:
+      - "27017:27017"

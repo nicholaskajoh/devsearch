@@ -12,5 +12,6 @@ setup(
         'mongoengine==0.15.0',
         'scrapy==1.5.0',
         'lxml==4.2.1',
+        'gunicorn==19.9.0',
     ],
 )

@@ -1,0 +1,22 @@
+version: "3"
+services:
+  web:
+    build: .
+    restart: always
+    env_file:
+      - ./.env
+    command: flask run --host=0.0.0.0 --port=5050
+    volumes:
+      - .:/www
+    ports:
+      - "5050:5050"
+    depends_on:
+      - db
+  db:
+    image: "mvertes/alpine-mongo"
+    restart: always
+    command: mongod --bind_ip 0.0.0.0 --port 27050
+    volumes:
+      - ./mongo/data/db:/data/db
+    ports:
+      - "27050:27050"
