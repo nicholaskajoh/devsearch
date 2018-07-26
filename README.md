@@ -8,7 +8,7 @@ A web search engine built with Python which uses TF-IDF and PageRank to sort sea
 - MongoEngine (MongoDB)
 - Bootstrap 4
 
-# Requirements
+## Requirements
 - Docker
 - Docker Compose
 
