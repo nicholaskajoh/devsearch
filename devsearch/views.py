@@ -77,7 +77,7 @@ def search():
             query = Query.objects.get(q=sq)
             query.update(frequency=query.frequency + 1)
 
-    exec_time = time.time() - start_time
+    search_time = time.time() - start_time
 
     return render_template(
         'search.html',
@@ -88,5 +88,5 @@ def search():
         pages=pages,
         pages_count=pages_count,
         pagination_data=pagination_data,
-        exec_time=exec_time,
+        search_time=search_time,
     )
