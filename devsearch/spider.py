@@ -16,7 +16,11 @@ class DSSpider(scrapy.Spider):
 
         self.start_urls = []
         is_crawled = recrawl.lower() in ['y', 'yes', 't', 'true', '1']
-        for link in CrawlList.objects(is_crawled=is_crawled).order_by('updated_at'):
+        crawl_list = CrawlList \
+            .objects(is_crawled=is_crawled) \
+            .limit(app.config['CLOSESPIDER_PAGECOUNT']) \
+            .order_by('updated_at')
+        for link in crawl_list:
             self.start_urls.append(link.url)
 
     def parse(self, response):
