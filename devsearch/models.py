@@ -6,7 +6,7 @@ import datetime
 connect(host=app.config['MONGODB_URI'])
 
 class PageLink(Document):
-    url = URLField()
+    url = StringField()
     created_at = DateTimeField()
     updated_at = DateTimeField()
 
@@ -18,14 +18,15 @@ class PageLink(Document):
 
 
 class Page(Document):
-    url = URLField(required=True, unique=True)
+    url = StringField(required=True, unique=True)
     title = StringField(required=True)
     content = StringField()
     links = ListField(ReferenceField(PageLink))
     pagerank = FloatField(default=0)
     created_at = DateTimeField()
     last_indexed = DateTimeField()
-    last_crawled = DateTimeField()
+
+    meta = {'strict': False}
 
     def save(self, *args, **kwargs):
         if not self.created_at:
@@ -46,7 +47,7 @@ class Index(Document):
 
 
 class CrawlList(Document):
-    url = URLField()
+    url = StringField()
     is_crawled = BooleanField(default=False)
     created_at = DateTimeField()
     updated_at = DateTimeField()

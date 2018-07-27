@@ -5,25 +5,19 @@ import lxml
 from lxml.html.clean import Cleaner
 import re
 from urllib.parse import urlparse
-import datetime
 
 
 class DSSpider(scrapy.Spider):
     name = "ds_spider"
 
-    def __init__(self, recrawl=False):
-        self.recrawl = recrawl
-
+    def __init__(self, recrawl='no'):
         if app.config['SPIDER_ALLOWED_DOMAINS'] != None:
             self.allowed_domains = app.config['SPIDER_ALLOWED_DOMAINS']
 
         self.start_urls = []
-        if self.recrawl:
-            for page in Page.objects.order_by('last_crawled'):
-                self.start_urls.append(page.url)
-        else:
-            for link in CrawlList.objects(is_crawled=False).order_by('created_at'):
-                self.start_urls.append(link.url)
+        is_crawled = recrawl.lower() in ['y', 'yes', 't', 'true', '1']
+        for link in CrawlList.objects(is_crawled=is_crawled).order_by('updated_at'):
+            self.start_urls.append(link.url)
 
     def parse(self, response):
         selector = Selector(response)
@@ -33,12 +27,13 @@ class DSSpider(scrapy.Spider):
         cleaner = Cleaner()
         cleaner.javascript = True
         cleaner.style = True
-        page_html = selector.xpath('//html').extract()[0]
+        page_html = selector.xpath('//body').extract()[0]
         # remove js and css code
         page_html = cleaner.clean_html(page_html)
         # extract text
         html_doc = lxml.html.document_fromstring(page_html)
-        page_content = " ".join(lxml.etree.XPath("//text()")(html_doc))
+        page_content = ' '.join(lxml.etree.XPath("//text()")(html_doc))
+        page_content += ' ' + page_title
         # remove line breaks, tabs and extra spaces
         page_content = re.sub('\n', ' ', page_content)
         page_content = re.sub('\r', ' ', page_content)
@@ -72,9 +67,4 @@ class DSSpider(scrapy.Spider):
             CrawlList.objects(url=response.url).update(is_crawled=True)
         else:
             page = Page.objects.get(url=response.url)
-            page.update(title=page_title, content=page_content, last_crawled=datetime.datetime.now())
-
-        if not self.recrawl:
-            # crawl page urls
-            for url in page_urls:
-                yield scrapy.Request(url, callback=self.parse)
+            page.update(title=page_title, content=page_content)
