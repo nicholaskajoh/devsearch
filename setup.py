@@ -11,7 +11,7 @@ setup(
         'click==6.7',
         'mongoengine==0.15.0',
         'scrapy==1.6.0',
-        'lxml==4.2.1',
+        'lxml==4.3.4',
         'gunicorn==19.9.0',
     ],
 )
