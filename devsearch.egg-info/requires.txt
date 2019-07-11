@@ -1,6 +1,6 @@
 flask==1.1.1
 python-dotenv==0.10.3
 click==6.7
-mongoengine==0.15.0
+mongoengine==0.18.2
 scrapy==1.6.0
 lxml==4.3.4
