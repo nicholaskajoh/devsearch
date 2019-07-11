@@ -7,7 +7,7 @@ setup(
     include_package_data=True,
     install_requires=[
         'flask==1.1.1',
-        'python-dotenv==0.8.2',
+        'python-dotenv==0.10.3',
         'click==6.7',
         'mongoengine==0.15.0',
         'scrapy==1.6.0',
