@@ -3,4 +3,4 @@ python-dotenv==0.10.3
 click==6.7
 mongoengine==0.15.0
 scrapy==1.6.0
-lxml==4.3.4
+lxml==4.6.2
